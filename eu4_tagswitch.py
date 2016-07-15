@@ -1,4 +1,4 @@
-import zipfile, argparse, re
+import zipfile, argparse, re, platform, os.path
 
 def tag_switch(source_path, target_path, tag):
     if (not zipfile.is_zipfile(source_path)):
@@ -6,6 +6,11 @@ def tag_switch(source_path, target_path, tag):
     source_zip = zipfile.ZipFile(source_path, 'r')
     metadata = extract_save_metadata(source_zip)
     metadata = tag_replace(metadata, tag)
+    if not target_path:
+        if platform.system().lower() == "darwin":
+            target_path = os.path.join(os.path.expanduser("~/Documents/Paradox Interactive/Europa Universalis IV/save games"), tag.lower()+".eu4")
+        else:
+            raise ValueError("Need to give a path to save the new save file.")
     save_metadata(metadata, source_zip, target_path)
 
 def save_metadata(metadata, source_zip, target_path):
@@ -34,7 +39,10 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(description='EU4 Ironman Tagswitcher')
     parser.add_argument('tag')
     parser.add_argument('source_path')
-    parser.add_argument('target_path')
+    if platform.system().lower() == "darwin":
+        parser.add_argument('target_path', nargs='?', default=None)
+    else:
+        parser.add_argument('target_path')
     args = parser.parse_args()
     tag_switch(args.source_path, args.target_path, args.tag)
     #print args.source_file
