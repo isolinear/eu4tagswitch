@@ -1,9 +1,9 @@
 # eu4tagswitch.py
 
 
-For tagswitching in *locally saved* ironman games in EU4 v1.13.x.  This preserves ironman on the modified save even after changing to another country.  Useful to switch to an opposing country and scout out your opposition.
+For tagswitching in *locally saved* ironman games in EU4 v1.13.x and EU4 v1.17.1.  This preserves ironman on the modified save even after changing to another country.  Useful to switch to an opposing country and scout out your opposition.
 
-It reportedly preserves the ability to receive achievements as well after tag switching, but I have not tested this.
+It reportedly preserves the ability to receive achievements as well after tag switching, but I have not tested this in 1.17.1.
 
 
 ####Usage
@@ -17,7 +17,7 @@ It reportedly preserves the ability to receive achievements as well after tag sw
 where ```tag``` is the [country tag](http://www.eu4wiki.com/Countries) you want to switch to, ```source_path``` is the path to the ironman save file, and ```target_path``` is the path where you want to save the modified save file.  
 
 ## Warnings
-**DO NOT** use on later versions of this game, > 1.13.
+**DO NOT** use on later versions of this game, > 1.17.1.
 
 For various implementation reasons, do **not** attempt to directly overwrite the old save file with the new save file, by setting ```source_path``` and ```target_path``` to the same path.  Always save to another file, then manually copy the new file over the old.
 
