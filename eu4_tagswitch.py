@@ -1,4 +1,9 @@
 import zipfile, argparse, re, platform, os.path
+import struct
+
+EU4BIN_PLAYER_TOKEN = "\x38\x2a"
+EU4BIN_ASSIGNMENT_OPERATOR_TOKEN = "\x01\x00"
+EU4BIN_STRING_TYPE_TOKEN = "\x0f\x00"
 
 def tag_switch(source_path, target_path, tag):
     if (not zipfile.is_zipfile(source_path)):
@@ -29,10 +34,22 @@ def extract_save_metadata(source_zip):
     return metadata
 
 def tag_replace(metadata, tag):
-    pat = re.compile(r'^player="[A-Z]+"', flags=re.MULTILINE)
-    m = pat.search(metadata)
-    if m:
-        return pat.sub('player="%s"' % (tag), metadata)
+    if (metadata.startswith("EU4bin")):
+        metadata = bytearray(metadata)
+        prefix_bytes = EU4BIN_PLAYER_TOKEN+EU4BIN_ASSIGNMENT_OPERATOR_TOKEN+EU4BIN_STRING_TYPE_TOKEN
+        prefix_length = len(prefix_bytes)
+        pos = metadata.find(prefix_bytes)
+        # tag_old_length_bytes = metadata[pos+prefix_length:pos+prefix_length+2]
+        tag_length = struct.pack("h", len(tag))
+        metadata[pos + prefix_length:pos + prefix_length + 2] = tag_length
+        #tag_old = metadata[pos + prefix_length+2:pos + prefix_length + 2+len(tag)]
+        metadata[pos + prefix_length + 2 : pos + prefix_length + 2 + len(tag)] = tag
+        metadata = str(metadata)
+    else:
+        pat = re.compile(r'^player="[A-Z]+"', flags=re.MULTILINE)
+        m = pat.search(metadata)
+        if m:
+            return pat.sub('player="%s"' % (tag), metadata)
     return metadata
 
 if __name__=="__main__":
